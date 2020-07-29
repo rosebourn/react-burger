@@ -13,14 +13,21 @@ class App extends Component {
     showPersons: false
   };
 
-  nameChangedHandler = event => {
-    this.setState({
-      persons: [
-        { name: "Miana", age: 42 },
-        { name: event.target.value, age: 13 },
-        { name: "Steve", age: 33 }
-      ]
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
     });
+
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState({persons: persons});
   };
 
 deletePersonHandler = (personIndex) => {
@@ -54,7 +61,8 @@ deletePersonHandler = (personIndex) => {
       click={() => this.deletePersonHandler(index)}
       name={person.name} 
       age={person.age}
-      key={person.id} />
+      key={person.id}
+      changed={(event) => this.nameChangedHandler(event, person.id)} />
   })}
             {/* <Person
               name={this.state.persons[0].name}
@@ -84,10 +92,6 @@ deletePersonHandler = (personIndex) => {
           Switch Name
         </button>
         {persons}
-        {/* Above does same thing as "bind()" below but not as good, use bind when you can */}
-        
-          
-       
       </div>
     );
   }
